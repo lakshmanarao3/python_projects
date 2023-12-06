@@ -22,7 +22,7 @@ Before you begin, ensure you have the following installed:
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/SubnetInfo.git
+    git clone https://github.com/lakshmanarao3/SubnetInfo.git
     cd SubnetInfo
     ```
 
