@@ -4,3 +4,5 @@ Flask-Login
 Flask-WTF
 Flask-Migrate
 email-validator
+PIL
+flask_bcrypt
