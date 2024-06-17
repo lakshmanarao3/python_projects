@@ -3,8 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %} - Blogger</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>{% block title %}Blogger{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        nav ul li form {
+            display: inline;
+        }
+        .flash {
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .flash.success {
+            background-color: #4caf50;
+            color: white;
+        }
+        .flash.error {
+            background-color: #f44336;
+            color: white;
+        }
+        .container {
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -12,11 +42,21 @@
             <li><a href="{{ url_for('home') }}">Home</a></li>
             {% if current_user.is_authenticated %}
                 <li><a href="{{ url_for('new_post') }}">New Post</a></li>
+                <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                {% if current_user.is_admin %}
+                    <li><a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a></li>
+                {% endif %}
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
             {% else %}
                 <li><a href="{{ url_for('login') }}">Login</a></li>
                 <li><a href="{{ url_for('register') }}">Register</a></li>
             {% endif %}
+            <li>
+                <form method="GET" action="{{ url_for('search') }}">
+                    <input type="text" name="query" placeholder="Search...">
+                    <button type="submit">Search</button>
+                </form>
+            </li>
         </ul>
     </nav>
     <div class="container">

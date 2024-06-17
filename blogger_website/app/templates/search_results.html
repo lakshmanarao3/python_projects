@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Search Results{% endblock %}
+{% block content %}
+    <h1>Search Results</h1>
+    {% if results %}
+        <ul>
+            {% for post in results %}
+                <li>
+                    <a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a>
+                    <p>{{ post.content[:200] }}...</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found for "{{ request.args.get('query') }}"</p>
+    {% endif %}
+{% endblock %}

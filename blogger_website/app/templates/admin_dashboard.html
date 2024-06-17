@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+    <style>
+        .dashboard {
+            max-width: 800px;
+            margin: auto;
+        }
+        .dashboard h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .dashboard .user-list {
+            margin: 20px 0;
+        }
+        .dashboard .user-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+    </style>
+    <div class="dashboard">
+        <h2>Admin Dashboard</h2>
+        <div class="user-list">
+            <h3>Users</h3>
+            {% for user in users %}
+            <div class="user-item">
+                <strong>{{ user.username }}</strong> - {{ user.email }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
