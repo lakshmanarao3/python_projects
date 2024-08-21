@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+  {% if result is defined %}
+    <h4>Subnets</h4>
+    <ul>
+      {% for host in result %}
+        <li>{{ host }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="alert alert-danger">
+      No result found.
+    </div>
+  {% endif %}
+{% endblock %}

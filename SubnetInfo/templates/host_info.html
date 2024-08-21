@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+{% if result is defined %}
+  <div class="jumbotron">
+    <ul>
+      {% for key, value in result.items() %}
+        <li>{{ key }} : {{ value }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% else %}
+  <div class="alert alert-danger">
+    No result found.
+  </div>
+{% endif %}
+{% endblock %}

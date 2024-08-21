@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <h1>Welcome to SubnetInfo website</h1>
+        <div class="jumbotron">
+            <h4>Wanna know about your network</h4>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <input type="hidden" name="form_type" value="hostinfo">
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        {{ form.network.label(class="control-label") }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.network(class="form-control",placeholder="e.g, 192.168.1.0/24") }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+            <h4>Do you want to calculate the subnets with required no of hosts</h4>
+            <p>fill the details here!</p>
+            <form method="POST">
+                {{form1.hidden_tag()}}
+                <input type="hidden" name="form_type" value="subnethost">
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        {{ form1.network.label(class="control-label") }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form1.network(class="form-control") }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        {{ form1.hosts.label(class="control-label") }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form1.hosts(class="form-control") }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form1.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+            <h4>Do you want to calculate the subnets with as many hosts as possible</h4>
+            <p>fill the details here!</p>
+            <form method="POST">
+                {{form2.hidden_tag()}}
+                <input type="hidden" name="form_type" value="subnetsubnets">
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        {{ form2.network.label(class="control-label") }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form2.network(class="form-control") }}
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        {{ form2.subnets.label(class="control-label") }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form2.subnets(class="form-control") }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form2.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
