@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Blogger{% endblock %}</title>
+
+    <!-- Custom Styles -->
+    <style>
+        /* Body Font */
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('/static/images/unsplash.jpg'); /* Path to the background image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        nav ul {
+            list-style: none;
+            padding: 0;
+            background-color: #333;
+            overflow: hidden;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        nav ul li a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        nav ul li a:hover {
+            background-color: #575757;
+        }
+        nav ul li form {
+            display: inline;
+        }
+        nav ul li form input {
+            padding: 5px;
+        }
+
+        /* Flash Messages */
+        .flash {
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .flash.success {
+            background-color: #4caf50;
+            color: white;
+        }
+        .flash.error {
+            background-color: #f44336;
+            color: white;
+        }
+
+        /* Container for Page Content */
+        .container {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* Transparent white background for better readability */
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        /* Footer Styling */
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        .footer span {
+            color: #17a2b8;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('new_post') }}">New Post</a></li>
+                <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                {% if current_user.is_admin %}
+                    <li><a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
+            {% endif %}
+            <li>
+                <form method="GET" action="{{ url_for('search') }}">
+                    <input type="text" name="query" placeholder="Search...">
+                    <button type="submit">Search</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <span>© 2024 Lakshmanarao</span> - All rights reserved.
+    </footer>
+</body>
+</html>

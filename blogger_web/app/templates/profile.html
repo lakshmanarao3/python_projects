@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+    <h1>Profile</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <img src="{{ image_file }}" alt="Profile Picture" style="width: 150px;">
+        </div>
+        <div class="form-group">
+            {{ form.username.label }}
+            {{ form.username(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.email.label }}
+            {{ form.email(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.picture.label }}
+            {{ form.picture(class="form-control-file") }}
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+{% endblock %}

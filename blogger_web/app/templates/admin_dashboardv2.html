@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Admin Dashboard</h1>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Search Form -->
+    <div class="mb-4">
+        <form method="GET" action="{{ url_for('admin_dashboard') }}" class="form-inline">
+            <div class="form-group mr-2">
+                <input type="text" name="search" class="form-control" placeholder="Search users or posts" value="{{ request.args.get('search', '') }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+
+    <!-- Users Section -->
+    <h2 class="mb-3">Users</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Last Login</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users.items %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.last_login.strftime('%Y-%m-%d %H:%M:%S') if user.last_login else 'N/A' }}</td>
+                <td>
+                    <button onclick="editUser('{{ user.id }}')" class="btn btn-sm btn-primary">Edit</button>
+                    <button onclick="deleteUser('{{ user.id }}')" class="btn btn-sm btn-danger">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- User Pagination -->
+    <nav aria-label="User pagination">
+        <ul class="pagination">
+            {% for page_num in users.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                    {% if users.page == page_num %}
+                        <li class="page-item active">
+                            <a class="page-link" href="{{ url_for('admin_dashboard', page=page_num, post_page=posts.page, search=request.args.get('search', '')) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('admin_dashboard', page=page_num, post_page=posts.page, search=request.args.get('search', '')) }}">{{ page_num }}</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+
+    <!-- Posts Section -->
+    <h2 class="mb-3 mt-5">Posts</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Date Posted</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts.items %}
+            <tr>
+                <td>{{ post.id }}</td>
+                <td>{{ post.title }}</td>
+                <td>{{ post.author.username }}</td>
+                <td>{{ post.date_posted.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    <button onclick="editPost('{{ post.id }}')" class="btn btn-sm btn-primary">Edit</button>
+                    <button onclick="deletePost('{{ post.id }}')" class="btn btn-sm btn-danger">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Post Pagination -->
+    <nav aria-label="Post pagination">
+        <ul class="pagination">
+            {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                    {% if posts.page == page_num %}
+                        <li class="page-item active">
+                            <a class="page-link" href="{{ url_for('admin_dashboard', page=users.page, post_page=page_num, search=request.args.get('search', '')) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('admin_dashboard', page=users.page, post_page=page_num, search=request.args.get('search', '')) }}">{{ page_num }}</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">...</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+
+    <!-- Quick Stats -->
+    <div class="mt-5">
+        <h2>Quick Stats</h2>
+        <p>Active Users (last 30 days): {{ active_users }}</p>
+    </div>
+</div>
+
+<script>
+    function editUser(userId) {
+        window.location.href = `/admin/users/edit/${userId}`;
+    }
+
+    function deleteUser(userId) {
+        if (confirm('Are you sure you want to delete this user?')) {
+            fetch(`/admin/users/delete/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            });
+        }
+    }
+
+    function editPost(postId) {
+        window.location.href = `/admin/posts/edit/${postId}`;
+    }
+
+    function deletePost(postId) {
+        if (confirm('Are you sure you want to delete this post?')) {
+            fetch(`/admin/posts/delete/${postId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}
