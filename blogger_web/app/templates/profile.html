@@ -1,24 +1,49 @@
 {% extends "base.html" %}
+
 {% block title %}Profile{% endblock %}
+
 {% block content %}
-    <h1>Profile</h1>
-    <form method="POST" enctype="multipart/form-data">
+<div class="container mt-4">
+    <h1 class="mb-4">Profile</h1>
+    <form method="POST" enctype="multipart/form-data" class="border p-4 rounded">
         {{ form.hidden_tag() }}
-        <div class="form-group">
-            <img src="{{ image_file }}" alt="Profile Picture" style="width: 150px;">
-        </div>
-        <div class="form-group">
-            {{ form.username.label }}
-            {{ form.username(class="form-control") }}
-        </div>
-        <div class="form-group">
-            {{ form.email.label }}
-            {{ form.email(class="form-control") }}
-        </div>
-        <div class="form-group">
-            {{ form.picture.label }}
+        <div class="form-group text-center">
+            <label for="profilePicture" class="form-label">Profile Picture</label><br>
+            <img src="{{ image_file }}" alt="Profile Picture" class="img-thumbnail mb-3" style="width: 150px; height: 150px;">
             {{ form.picture(class="form-control-file") }}
+            <small class="form-text text-muted">Upload a new profile picture (optional).</small>
         </div>
-        <button type="submit" class="btn btn-primary">Update</button>
+        <div class="form-group">
+            {{ form.username.label(class="form-label") }}
+            {{ form.username(class="form-control", placeholder="Enter your username") }}
+        </div>
+        <div class="form-group">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control", placeholder="Enter your email address") }}
+        </div>
+        <div class="form-group">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control", placeholder="Enter a new password (optional)") }}
+            <small class="form-text text-muted">Leave blank if you don’t want to change your password.</small>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Update Profile</button>
     </form>
+</div>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="container mt-3">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
 {% endblock %}
+

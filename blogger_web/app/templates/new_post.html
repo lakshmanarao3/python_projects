@@ -1,17 +1,30 @@
 {% extends "base.html" %}
-{% block title %}New Post{% endblock %}
+
+{% block title %}Create New Post{% endblock %}
+
 {% block content %}
+<div class="container mt-4">
     <h1>Create a New Post</h1>
-    <form method="POST" action="{{ url_for('new_post') }}">
+    
+    <!-- Form to submit the post -->
+    <form method="POST" action="{{ url_for('post.new_post') }}">
         {{ form.hidden_tag() }}
+        
+        <!-- Post Title -->
         <div class="form-group">
-            {{ form.title.label }}
-            {{ form.title(class="form-control") }}
+            <label for="title">Post Title</label>
+            {{ form.title(class="form-control", placeholder="Enter your post title") }}
         </div>
+        
+        <!-- Plain Textarea for Content -->
         <div class="form-group">
-            {{ form.content.label }}
-            {{ form.content(class="form-control") }}
+            <label for="content">Post Content</label>
+            {{ form.content(class="form-control", rows=5, placeholder="Write your post content here...") }}
         </div>
-        <button type="submit" class="btn btn-primary">Post</button>
+        
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary mt-2">Publish Post</button>
     </form>
+</div>
 {% endblock %}
+

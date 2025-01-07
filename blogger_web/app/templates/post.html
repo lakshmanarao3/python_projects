@@ -1,25 +1,47 @@
 {% extends "base.html" %}
-{% block content %}
-<article class="media content-section">
-  <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
-  <div class="media-body">
-    <div class="article-metadata">
-      <a class="mr-2" href="#">{{ post.author.username }}</a>
-      <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
-    </div>
-    <h2 class="article-title">{{ post.title }}</h2>
-    <p class="article-content">{{ post.content }}</p>
 
-    <!-- Like Button -->
-    <form action="{{ url_for('like_post', post_id=post.id) }}" method="post">
-      <button type="submit" class="btn btn-primary">
-        {% if current_user in post.liked_by %}
-          Unlike
-        {% else %}
-          Like
-        {% endif %}
-      </button>
-    </form>
-  </div>
-</article>
-{% endblock content %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <article class="media content-section border p-3 shadow-sm">
+        <img 
+            class="rounded-circle mr-3"
+            src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}"
+            alt="Author image"
+            width="64"
+            height="64">
+        <div class="media-body">
+            <!-- Post Metadata -->
+            <div class="article-metadata d-flex justify-content-between align-items-center">
+                <div>
+                    <a href="{{ url_for('user_profile', username=post.author.username) }}" class="mr-2 text-decoration-none text-dark">
+                        <strong>{{ post.author.username }}</strong>
+                    </a>
+                    <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                </div>
+                <form action="{{ url_for('like_post', post_id=post.id) }}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-outline-primary btn-sm">
+                        {% if current_user in post.liked_by %}
+                            <i class="bi bi-heart-fill"></i> Unlike
+                        {% else %}
+                            <i class="bi bi-heart"></i> Like
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+            <!-- Post Title and Content -->
+            <h1 class="mt-3">{{ post.title }}</h1>
+            <p class="article-content text-justify">{{ post.content }}</p>
+        </div>
+    </article>
+    <hr>
+
+    <!-- Comments Section -->
+    <div>
+        <h3>Comments</h3>
+        {% include "view_post.html" with context %}
+    </div>
+</div>
+{% endblock %}
+

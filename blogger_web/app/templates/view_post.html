@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Post Content -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h1 class="card-title">{{ post.title }}</h1>
+            <p class="card-text">{{ post.content }}</p>
+            <p class="text-muted">By <strong>{{ post.author.username }}</strong> on {{ post.date_posted.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <form method="POST" action="{{ url_for('post.like_post', post_id=post.id) }}" class="d-inline">
+                <button type="submit" class="btn btn-primary">
+                    Like ({{ post.like_count }})
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="card">
+        <div class="card-header">
+            <h3>Comments ({{ comments|length }})</h3>
+        </div>
+        <div class="card-body">
+            <!-- Add Comment Form -->
+            <form method="POST" action="{{ url_for('post.add_comment', post_id=post.id) }}">
+                <div class="form-group">
+                    <textarea name="content" rows="3" class="form-control" placeholder="Add a comment..." required></textarea>
+                    <input type="hidden" name="parent_id" value="">
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
+            </form>
+        </div>
+        <div class="card-body">
+            <!-- Display Comments -->
+            {% if comments %}
+            <ul class="list-unstyled">
+                {% for comment in comments %}
+                <li class="media mb-4">
+                    <img src="{{ url_for('static', filename='profile_pics/' + (comment.user.image_file or 'default.jpg')) }}" 
+                         class="mr-3 rounded-circle" 
+                         alt="{{ comment.user.username }}" 
+                         width="40">
+                    <div class="media-body">
+                        <h5 class="mt-0 mb-1">{{ comment.user.username }} 
+                            <small class="text-muted">{{ comment.date_posted.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                        </h5>
+                        <p>{{ comment.content }}</p>
+                        <!-- Reply Form -->
+                        <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#replyForm{{ comment.id }}">
+                            Reply
+                        </button>
+                        <div id="replyForm{{ comment.id }}" class="collapse mt-2">
+                            <form method="POST" action="{{ url_for('post.add_comment', post_id=post.id) }}">
+                                <textarea name="content" rows="2" class="form-control mb-2" placeholder="Write a reply..." required></textarea>
+                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                <button type="submit" class="btn btn-secondary btn-sm">Reply</button>
+                            </form>
+                        </div>
+                        <!-- Nested Replies -->
+                        {% if comment.children %}
+                        <ul class="list-unstyled ml-4 mt-2">
+                            {% for reply in comment.children %}
+                            <li class="media mb-3">
+                                <img src="{{ url_for('static', filename='profile_pics/' + (reply.user.image_file or 'default.jpg')) }}" 
+                                     class="mr-3 rounded-circle" 
+                                     alt="{{ reply.user.username }}" 
+                                     width="30">
+                                <div class="media-body">
+                                    <h6 class="mt-0 mb-1">{{ reply.user.username }} 
+                                        <small class="text-muted">{{ reply.date_posted.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                                    </h6>
+                                    <p>{{ reply.content }}</p>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted">No comments yet. Be the first to comment!</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

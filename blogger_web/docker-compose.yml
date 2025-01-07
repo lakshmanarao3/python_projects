@@ -1,22 +1,23 @@
 version: '3.8'
-
 services:
+
   web:
     build: .
-    command: gunicorn --bind 0.0.0.0:8080 run:app
     ports:
-      - "8080:8080"
+      - "8000:8000"
     depends_on:
       - db
+    environment:
+      FLASK_ENV: development
+      BOOTSTRAP_SERVERS: broker:9092
+
 
   db:
     image: postgres:13
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: flaskuser
       POSTGRES_PASSWORD: flaskpassword
       POSTGRES_DB: flaskdb
+    ports:
+      - "5432:5432"
 
-volumes:
-  postgres_data:

@@ -1,17 +1,50 @@
 {% extends "base.html" %}
+
 {% block title %}Search Results{% endblock %}
+
 {% block content %}
-    <h1>Search Results</h1>
+<div class="container mt-4">
+    <h1 class="mb-4">Search Results for <span class="text-primary">"{{ query }}"</span></h1>
+    
     {% if results %}
-        <ul>
+        <div class="list-group">
             {% for post in results %}
-                <li>
-                    <a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a>
-                    <p>{{ post.content[:200] }}...</p>
-                </li>
+                <a href="{{ url_for('post.view_post', post_id=post.id) }}" class="list-group-item list-group-item-action">
+                    <h5 class="mb-1">{{ post.title }}</h5>
+                    <p class="mb-1 text-muted">{{ post.content[:100] }}...</p>
+                    <small>By {{ post.author.username }} on {{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+                </a>
             {% endfor %}
-        </ul>
+        </div>
+
+        <!-- Pagination (if applicable) -->
+        {% if pagination %}
+            <nav aria-label="Search results pagination" class="mt-4">
+                <ul class="pagination">
+                    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                        {% if page_num %}
+                            {% if pagination.page == page_num %}
+                                <li class="page-item active">
+                                    <a class="page-link" href="{{ url_for('post.search', q=query, page=page_num) }}">{{ page_num }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('post.search', q=query, page=page_num) }}">{{ page_num }}</a>
+                                </li>
+                            {% endif %}
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </nav>
+        {% endif %}
     {% else %}
-        <p>No results found for "{{ request.args.get('query') }}"</p>
+        <div class="alert alert-info" role="alert">
+            <p>No results found for <strong>{{ query }}</strong>.</p>
+            <p>Try searching with different keywords or return to the <a href="{{ url_for('post.home') }}" class="alert-link">home page</a>.</p>
+        </div>
     {% endif %}
+</div>
 {% endblock %}
+

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Notifications</h1>
+
+    <!-- Mark All as Read Button -->
+    <form method="POST" class="mb-3">
+        <button type="submit" class="btn btn-primary">Mark All as Read</button>
+    </form>
+
+    <!-- Notifications List -->
+    {% if notifications %}
+    <ul class="list-group">
+        {% for notification in notifications %}
+        <li class="list-group-item d-flex justify-content-between align-items-center 
+                   {% if notification.is_read %}list-group-item-secondary{% else %}list-group-item-primary{% endif %}">
+            <div>
+                {{ notification.message }}
+                <br>
+                <small class="text-muted">{{ notification.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+            </div>
+            {% if not notification.is_read %}
+            <span class="badge badge-success">New</span>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-muted">You have no notifications at the moment.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

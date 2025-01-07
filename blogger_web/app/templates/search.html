@@ -1,18 +1,40 @@
 {% extends "base.html" %}
+
 {% block title %}Search Results{% endblock %}
+
 {% block content %}
-    <h1>Search Results</h1>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="form-group">
-            {{ form.search(class="form-control") }}
+<div class="container mt-4">
+    <h1 class="mb-4">Search Results</h1>
+    
+    <!-- Search Form -->
+    <form method="GET" action="{{ url_for('post.search') }}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Search for posts..." value="{{ request.args.get('q', '') }}">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
         </div>
-        <button type="submit" class="btn btn-primary">Search</button>
     </form>
-    {% for post in posts %}
-        <div class="post">
-            <h2><a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h2>
-            <p>{{ post.content }}</p>
-        </div>
-    {% endfor %}
+
+    <!-- Results Section -->
+    {% if results %}
+        <p>Found {{ results|length }} result(s) for "{{ request.args.get('q', '') }}":</p>
+        {% for post in results %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        <a href="{{ url_for('post.view_post', post_id=post.id) }}" class="text-decoration-none text-dark">
+                            {{ post.title }}
+                        </a>
+                    </h2>
+                    <p class="card-text">{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>
+                    <small class="text-muted">By {{ post.author.username }} on {{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">No results found for "{{ request.args.get('q', '') }}".</p>
+    {% endif %}
+</div>
 {% endblock %}
+
